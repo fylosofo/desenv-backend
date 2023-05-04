@@ -2,6 +2,7 @@ const express = require('express')
 const mysql = require('mysql')
 const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
+const funcoes = require('./funcoes')
 
 dotenv.config()
 const servidor = express()
@@ -17,6 +18,10 @@ const pool = mysql.createPool({
     debug    :  false
 });
 
+
+
+//import funcoes from './funcoes.js'
+
 servidor.listen(process.env.PORT, function() {
     console.log('ouvindo')
 });
@@ -25,31 +30,15 @@ servidor.get('/', async function(req, res) {
     res.send('Olá Mundo!')
 });
 
-servidor.get('/usuario/:cpf', async function(req, res) {
-    await pool.query("SELECT * FROM usuarios where cpf=?", [req.params.cpf], function (error, results, fields) {
-        if (error) throw error;
- 
-        if (results.length > 0)  {// se achou usuário
-            res.send(results)
-        }
-        else {
-            res.send("Nenhum usuário encontrado!")
-        }
-        
-      });
+servidor.get('/usuario/:cpf', function(req, res) {
+    funcoes.getUsuarioPorCpf(req, res, pool)
 });
 
-servidor.post('/usuario/', async function(req, res) {
-    await pool.query("SELECT * FROM usuarios where cpf=?", [req.body.cpf], function (error, results, fields) {
-        if (error) throw error;
- 
-        if (results.length > 0)  {
-            res.send(results)
-        }
-        else {
-            res.send("Nenhum usuário encontrado!!!")
-        }
-        
-      });
+servidor.get('/usuario/listar', function(req, res) {
+    funcoes.getTodosOsUsuarios(req, res, pool)
+});
+
+servidor.post('/usuario/cadastrar', function (req, res) {
+    funcoes.addUsuario(req, res, pool)
 });
 
