@@ -4,6 +4,7 @@ const dotenv = require('dotenv')
 const bodyParser = require('body-parser')
 const funcoes = require('./funcoes')
 
+
 dotenv.config()
 const app = express()
 
@@ -55,6 +56,10 @@ app.delete('/usuario/deletar', async function (req, res) {
 
 app.post('/usuario/validar', async function (req, res) {
     await funcoes.validateUsuario(req, res, pool)
+});
+
+app.post('/usuario/login', async function (req, res, next) {
+    await funcoes.verificarToken(req, res, pool, next)
 });
 
 

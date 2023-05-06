@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
 async function hashPassword(plaintextPassword) {
     const hash = await bcrypt.hash(plaintextPassword, 10);
@@ -17,6 +18,8 @@ async function validateUsuario(req, res, pool) {
             if (error) throw error;
 
             if (results.length > 0) {// se achou usuário
+                const token = generateAccessToken({ cpf: req.body.cpf })
+                console.log("token: Bearer", token)
                 const comparaSenha = await comparePassword(req.body.senha.toString(), results[0].senha)
                 res.send(comparaSenha ? 'Senha validada com sucesso!' : 'Senha inválida')
             }
@@ -129,11 +132,40 @@ async function getTodosOsUsuarios(req, res, pool) {
     });
 }
 
+function generateAccessToken(cpf) {
+    return jwt.sign(cpf, process.env.TOKEN_SECRET, { expiresIn: '1800s' });
+}
+
+function authenticateToken(req, res, next, token) {
+    if (token == null) return res.sendStatus(401)
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
+        //console.log(err)
+        //if (err) return res.sendStatus(403)
+        req.user = user
+        next()
+    })
+}
+
+async function verificarToken(req, res, pool, next) {
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    authenticateToken(req, res, next, token)
+
+    if (req.user) {
+        res.send("Token válido")
+    }
+    else {
+        res.send("Token inválido! Valide a senha novamente para gerar novo Token.")
+    }
+}
+
+
 module.exports = {
     addUsuario,
     updateUsuario,
     deleteUsuario,
     getUsuarioPorCpf,
     getTodosOsUsuarios,
-    validateUsuario
+    validateUsuario,
+    verificarToken
 }
