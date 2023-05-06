@@ -4,10 +4,10 @@
 
 ### Passo a passo para rodar o script:
 
-1 - Clonar o arquivo;
-2 - Criar o Banco de Dados no MySql;
-3 - Instalar dependencias (npm install)
-4 - Iniciar o serviço (npm start)
+1 - Clonar o arquivo;<br />
+2 - Criar o Banco de Dados no MySql;<br />
+3 - Instalar dependencias (npm install)<br />
+4 - Iniciar o serviço (npm start)<br /><br /><br />
 
 ### Script do Banco de Dados no MySql
 
