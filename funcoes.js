@@ -103,7 +103,7 @@ async function deleteUsuario(req, res, pool) {
 }
 
 async function getUsuarioPorCpf(req, res, pool) {
-    let cpf = (req.body) ? req.body.cpf : req.params.cpf
+    let cpf = req.params.cpf
 
     pool.query("SELECT * FROM usuarios where cpf=?", [cpf], function (error, results, fields) {
         if (error) throw error;
