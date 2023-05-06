@@ -15,8 +15,7 @@ async function validateUsuario(req, res, pool) {
     if (req.body.cpf && req.body.senha) {
         pool.query("SELECT senha FROM usuarios where cpf=?", [req.body.cpf], async function (error, results, fields) {
             if (error) throw error;
-            console.log("resultsx:", results)
-            console.log("resultsxx:", results.affectedRows)
+
             if (results.length > 0) {// se achou usuário
                 const comparaSenha = await comparePassword(req.body.senha.toString(), results[0].senha)
                 res.send(comparaSenha ? 'Senha validada com sucesso!' : 'Senha inválida')
@@ -90,8 +89,7 @@ async function deleteUsuario(req, res, pool) {
     pool.query("DELETE FROM usuarios WHERE cpf=?",
         [cpf], function (error, results, fields) {
             if (error) throw error;
-            console.log("resultsy:", results)
-            console.log("resultsyy:", results.affectedRows)
+
             if (results.affectedRows) {
                 res.send("Usuário deletado com sucesso!")
             }
@@ -103,7 +101,7 @@ async function deleteUsuario(req, res, pool) {
 
 async function getUsuarioPorCpf(req, res, pool) {
     let cpf = (req.body) ? req.body.cpf : req.params.cpf
-    console.log("existe", cpf)
+
     pool.query("SELECT * FROM usuarios where cpf=?", [cpf], function (error, results, fields) {
         if (error) throw error;
 
